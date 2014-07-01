@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
+{% block head %}User Registration{% endblock %}
+{% block content %}
+    <form method="post" action=".">{% csrf_token %}
+        <table border="0">
+            <div >
+            <label for='account_name'> Account name </label>
+            <input type='text' name='Account' id='account_name'><br/>
+            <label for='full_name'> Full name </label>
+            <input type='text' name='Fullname' id='full_name'>
+            <label for='email'> Email </label>
+            <input type='text' name='Email' id='email'><br/>
+            <label for='password'>Password </label>
+            <input type='password' name='Password' id='password'>
+            <label for='password2'>Re-enter password </label>
+            <input type='password' name='Password2' id='password2'>
+            </div>
+        <input type="submit" value="Register" />
+        </table>
+    </form>
+{% endblock %}

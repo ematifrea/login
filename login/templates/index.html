@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+<form action='/auth/' method='POST'> {% csrf_token %}
+    <div >
+        <label for='username'> Username </label>
+        <input type='text' name='Username' id='username'><br/>
+        <label for='password'>Password </label>
+        <input type='password' name='Password' id='password'>
+        <input type='submit' value='login'>
+    </div>
+</form>
+
+</body>
+</html>
