@@ -9,7 +9,7 @@ class UserInLine(admin.StackedInline):
 class UserAdmin(admin.ModelAdmin):
 
     ist_display = ('name', 'email', 'last_login_date')
-    inlines = [UserInLine]
+    # inlines = [UserInLine]
 
     search_fields = ['name']
 

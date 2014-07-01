@@ -1,6 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+
+
 {% block head %}Login{% endblock %}
+
 {% block content %}
     {% if login.errors %}
         <p>Your username and password didn't match. Please try again.</p>
@@ -15,5 +20,5 @@
         <input type="submit" value="Login" />
         <input type="hidden" name="next" value="/home" />
     </form>
-    <a href="/register">Register</a>
+    <a href="{%  url 'login:register' %}">Register</a>
 {% endblock %}

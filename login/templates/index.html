@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-<form action='/auth/' method='POST'> {% csrf_token %}
-    <div >
-        <label for='username'> Username </label>
-        <input type='text' name='Username' id='username'><br/>
-        <label for='password'>Password </label>
-        <input type='password' name='Password' id='password'>
-        <input type='submit' value='login'>
-    </div>
-</form>
+{% extends "base.html" %}
+{% load static %}
 
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+
+{% block title %} Main {% endblock %}
+<body>
+{% block head %} HOME {% endblock %}
+{% block content %}
+
+    <p>Welcome {{ account_name }} </p>
+    <a href="{% url 'login:login' %}">Login</a>
+{% endblock %}
 </body>
-</html>

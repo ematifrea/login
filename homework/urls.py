@@ -6,10 +6,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', views.login),
-    url(r'^logout/$', views.logout),
-    # url(r'^login/$', 'django.contrib.auth.views.login'),
-    url(r'^register/$', views.register),
-    # url(r'^home/$', views.home),
+    url(r'^$', views.index, name='index'),
+    url(r'^login/', include('login.urls', namespace='login')),
+    url(r'^logout/', views.logout, name='logout'),
     url(r'^admin/', include(admin.site.urls)),
 )
