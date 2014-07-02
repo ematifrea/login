@@ -1,4 +1,9 @@
 title
-     { color: blue; font:40px;}
+     { background-color: blue; font:40px;}
 head
      { color: red; font: 20px;}
+body
+{
+    background: #adffd1;
+
+}

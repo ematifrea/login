@@ -1,14 +1,12 @@
 {% extends "base.html" %}
-{% load static %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
-
-{% block title %} Main {% endblock %}
+{% block title %} Main
+{% endblock %}
 <body>
 {% block head %} HOME {% endblock %}
 {% block content %}
 
     <p>Welcome {{ account_name }} </p>
-    <a href="{% url 'login:login' %}">Login</a>
+    <a href="{% url 'logout' %}">Logout</a>
 {% endblock %}
 </body>

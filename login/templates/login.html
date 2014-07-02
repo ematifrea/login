@@ -1,24 +1,17 @@
-{% extends "base.html" %}
-
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
-
-
+<html>
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css" />
 {% block head %}Login{% endblock %}
 
 {% block content %}
-    {% if login.errors %}
-        <p>Your username and password didn't match. Please try again.</p>
-    {% endif %}
-    <form method="post" action=".">{% csrf_token %}
+    <form method="post" action="login/">{% csrf_token %}
         <div >
             <label for='username'> Username </label>
             <input type='text' name='Username' id='username'><br/>
             <label for='password'>Password </label>
             <input type='password' name='Password' id='password'>
         </div>
-        <input type="submit" value="Login" />
-        <input type="hidden" name="next" value="/home" />
+        <input type="submit" name="login" value="Login" />
     </form>
     <a href="{%  url 'login:register' %}">Register</a>
 {% endblock %}
+</html>

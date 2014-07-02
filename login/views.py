@@ -10,13 +10,14 @@ def login(request):
     if request.method == 'POST':
         account_name = request.POST['Username']
         password = request.POST['Password']
-        user = User.objects.filter(account_name=account_name, password=password)
+        user = User.objects.get(account_name=account_name, password=password)
+
         if not user:
             return HttpResponseRedirect('register')
         else:
-            if user.active and \
-            'user_id' in request.session and request.session['account_name'] == user.account_name:
-                return render(request, 'index.html')
+            if user.active:
+                request.session['account_name'] = user.account_name
+                return HttpResponse(index(request))
             elif not user.active:
                 return HttpResponse('The user %s was not activated. Check your email' % user.account_name)
     # elif request.method == "GET":
