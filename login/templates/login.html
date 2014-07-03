@@ -1,17 +1,20 @@
-<html>
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css" />
-{% block head %}Login{% endblock %}
+{% extends 'base.html' %}
+
+{% block head %}<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css" />{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
-    <form method="post" action="login/">{% csrf_token %}
+    <form method="post" action="{% url 'login:login' %}">{% csrf_token %}
         <div >
-            <label for='username'> Username </label>
-            <input type='text' name='Username' id='username'><br/>
+            <label for='account_name'> Account name </label>
+            <input type='text' name='account_name' id='account_name' value="{{ account_name }}"><br/>
             <label for='password'>Password </label>
-            <input type='password' name='Password' id='password'>
+            <input type='password' name='password' id='password'>
+            {% if message %}
+                <p>{{ message }}</p>
+            {% endif %}
         </div>
         <input type="submit" name="login" value="Login" />
     </form>
     <a href="{%  url 'login:register' %}">Register</a>
 {% endblock %}
-</html>

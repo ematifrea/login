@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}User Registration{% endblock %}
 {% block content %}
-    <form method="post" action=".">{% csrf_token %}
+    <form method="post" action="{% url 'login:login' %}">{% csrf_token %}
         <table border="0">
             <div >
             <label for='account_name'> Account name </label>
