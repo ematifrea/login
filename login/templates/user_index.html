@@ -2,6 +2,10 @@
 {% block title %} this is the home page {% endblock %}
 {% block head %}Welcome to Django{% endblock %}
 {% block content %}
-    <p>Welcome {{ user.account_name }} </p>
+    <p>Welcome {{ user_id }} </p>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
     <a href="/logout/">Logout</a>
 {% endblock %}

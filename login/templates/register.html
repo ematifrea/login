@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block head %}User Registration{% endblock %}
+{% block head %}<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css" />{% endblock %}
 {% block content %}
-    <form method="post" action="{% url 'login:login' %}">{% csrf_token %}
+    <form method="post" action="{% url 'login:register' %}">{% csrf_token %}
         <table border="0">
             <div >
             <label for='account_name'> Account name </label>
@@ -15,7 +15,7 @@
             <label for='password2'>Re-enter password </label>
             <input type='password' name='Password2' id='password2'>
             </div>
-        <input type="submit" value="Register" />
+        <input type="submit" name="register" value="Register" />
         </table>
     </form>
 {% endblock %}
