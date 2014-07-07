@@ -1,14 +1,39 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.core import validators
+from login.models import User
 
+
+def isValidUsername(account_name):
+    try:
+        User.objects.get(account_name=account_name)
+    except User.DoesNotExist:
+        return
+    raise validators.ValidationError('The username "%s" is already taken.' % account_name)
+
+def existingEmail(email):
+    try:
+        User.objects.filter(email=email).exists()
+    except User.DoesNotExist:
+        return
+    raise ValidationError("Email %s already exists" %email)
+
+def identicalPasswords(password, password2):
+    if password == password2:
+        return
+    else:
+        raise ValidationError("Passwords do not match.")
 
 class UserRegistration(forms.Form):
-    account_name = forms.CharField(max_length=100, required=True)
-    full_name = forms.CharField(max_length=100, required=True)
-    email = forms.EmailField(max_length=100, required=True)
-    password = forms.CharField(max_length=50, required=True)
-    password2 = forms.CharField(max_length=50, required=True)
-
-
-
+    account_name = forms.CharField(widget=forms.TextInput(attrs={'size': '20'}),
+                                   validators=[validators.MaxLengthValidator, isValidUsername])
+    full_name = forms.CharField(widget=forms.TextInput(attrs={'size': '20'}),
+                                validators=[validators.MaxLengthValidator])
+    email = forms.EmailField(widget=forms.TextInput(attrs={'size': '20'}),
+                             validators=[validators.EmailValidator])
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
+                               validators=[validators.MaxLengthValidator])
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'size': '10'}),
+                                validators=[validators.MaxLengthValidator])
 
 

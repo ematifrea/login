@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %} Account confirmation {% endblock %}
+{% block head %}The user {{ new_user.account_name }} is now registered.{% endblock %}
+{% block content %}
+    <p>Welcome {{ new_user.full_name }} </p>
+    <p>An activation link was sent to the provided email.</p>
+
+    <a href="/logout/">Logout</a>
+{% endblock %}

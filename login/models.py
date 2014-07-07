@@ -16,11 +16,6 @@ class User(models.Model):
     def __unicode__(self):
         return "Account_name: %s on user %s" % (self.account_name, self.full_name)
 
-    def save(self,*args, **kwargs):
-        super(User, self).save(*args, **kwargs)
-        salt = hashlib.new(str(random.random())).hexdigest()[:5]
-        activation_key = hashlib.new(salt+User.account_name).hexdigest()
-        UserActivation(User, activation_key=activation_key).save()
 
 class UserActivation(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -29,5 +24,5 @@ class UserActivation(models.Model):
     key_expiration = models.DateTimeField(default=timezone.now() + datetime.timedelta(weeks=1))
 
     def __unicode__(self):
-        return "Account_name: %s on user %s" % (self.account_name, self.full_name)
+        return "User: %s is active:  %s" % (self.user.account_name, self.active)
 

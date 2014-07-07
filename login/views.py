@@ -1,3 +1,4 @@
+import urlparse
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.shortcuts import render, render_to_response
@@ -43,30 +44,29 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistration(request.POST)
         if form.is_valid():
-            registration_dict = {'account_name': request.POST['account_name'],
-                                 'full_name': request.POST['full_name'],
-                                 'email': request.POST['email'],
-                                 'password': request.POST['password'],
-                                 'last_login_date': timezone.now()}
-
-            salt = hashlib.new(str(random.random())).hexdigest()[:5]
-            registration_dict['activation_key'] = hashlib.new(salt+registration_dict['account_name']).hexdigest()
-            new_user_id = User().save(registration_dict)
-            activation_url = reverse('login:user_index', args=(new_user_id,))
-
+            new_user = User(
+                account_name=request.POST['account_name'],
+                full_name=request.POST['full_name'],
+                email=request.POST['email'],
+                password=request.POST['password'],
+                last_login_date=timezone.now())
+            new_user.save()
+            salt = hashlib.md5(str(random.random())).hexdigest()[:5]
+            activation_key = hashlib.md5(salt+request.POST['account_name']).hexdigest()
+            ac = UserActivation(user=new_user, activation_key=activation_key)
+            ac.save()
+            print reverse('login:activate')
+            activation_url = request.get_host() + reverse('login:activate') + activation_key
             print activation_url
-
-            email = EmailMessage('Account activation', 'the activation url', to=[request.POST['email']])
+            email = EmailMessage('Account activation', 'the activation url %s' % activation_url, to=[request.POST['email']])
             email.send()
             request.session['account_name'] = request.POST['account_name']
 
-            url = reverse('login:user_index', args=(new_user_id,))
-            message = 'An activation email has been sent.'
-            print url
-            return HttpResponseRedirect(reverse(url))
-        else:
-            form = UserRegistration()
+            return render_to_response('confirm.html', {'new_user': new_user})
     return render_to_response('register.html', {'form': form}, context_instance=RequestContext(request))
+
+def activate(request):
+    return render(request, 'user_index.html')
 
 def logout(request):
     try:
