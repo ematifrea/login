@@ -4,17 +4,26 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url 'login:login' %}">{% csrf_token %}
-        <div >
-            <label for='account_name'> Account name </label>
-            <input type='text' name='account_name' id='account_name' value="{{ account_name }}"><br/>
-            <label for='password'>Password </label>
-            <input type='password' name='password' id='password'>
-            {% if message %}
-                <p>{{ message }}</p>
-            {% endif %}
-        </div>
-        <input type="submit" name="login" value="Login" />
-    </form>
-    <a href="{%  url 'login:register' %}">Register</a>
+    {%  if recovery %}
+        <p>{{ recovery }}</p>
+        <a href="{% url 'login:reset' %}">Reset password</a>
+    {% endif %}
+    {% if message %}
+        <p> {{ message }}</p>
+         <meta http-equiv="refresh" content="2; url={% url 'login:login' %} " />
+    {% else %}
+        <form method="post" action="{% url 'login:login' %}">{% csrf_token %}
+            <div >
+                <label for='account_name'> Account name </label>
+                <input type='text' name='account_name' id='account_name' value="{{ account_name }}"><br/>
+                <label for='password'>Password </label>
+                <input type='password' name='password' id='password'>
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
+            </div>
+            <input type="submit" name="login" value="Login" />
+        </form>
+        <a href="{%  url 'login:register' %}">Register</a>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %} Logging out {% endblock %}
+{% block content %}
+    <p>User {{ account_name }} was logged out. </p>
+    <meta http-equiv="refresh" content="2; url={% url 'login:login' %} " />
+{% endblock %}

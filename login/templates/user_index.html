@@ -1,7 +1,12 @@
 {% extends "base.html" %}
-{% block title %} this is the home page {% endblock %}
-{% block head %}Welcome to Django{% endblock %}
+{% block title %} user index {% endblock %}
+{% block head %}Activation confirmation{% endblock %}
 {% block content %}
-    <p>Welcome {{ user.account_name }} </p>
-    <a href="/logout/">Logout</a>
+    {% if message %}
+        <p> {{ message }} </p>
+        <a href="register.html">Register</a>
+    {% endif %}
+    <p>Welcome {{ user.account_name }} Your account is now active</p>
+     <meta http-equiv="refresh" content="2; url={% url 'login:login' %} " />
+    <!--<a href="/logout/">Logout</a>
 {% endblock %}

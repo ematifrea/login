@@ -21,7 +21,7 @@ class UserActivation(models.Model):
     user = models.ForeignKey(User, unique=True)
     active = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=40)
-    key_expiration = models.DateTimeField(default=timezone.now() + datetime.timedelta(weeks=1))
+    key_expiration = models.DateTimeField(default=timezone.now() + datetime.timedelta(days=2))
 
     def __unicode__(self):
         return "User: %s is active:  %s" % (self.user.account_name, self.active)
