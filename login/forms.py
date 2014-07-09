@@ -11,12 +11,18 @@ def isValidUsername(account_name):
         return
     raise validators.ValidationError('The username "%s" is already taken.' % account_name)
 
-def existingEmail(email):
+def alreadyExistsEmail(email):
     try:
         User.objects.filter(email=email).exists()
     except User.DoesNotExist:
         return
-    raise ValidationError("Email %s already exists" %email)
+    raise ValidationError("Email %s already exists" % email)
+
+def existsEmail(email):
+    try:
+        User.objects.filter(email=email).exists()
+    except User.DoesNotExist:
+        raise ValidationError("Email %s already exists" % email)
 
 def identicalPasswords(password, password2):
     if password == password2:
@@ -33,7 +39,15 @@ class UserRegistration(forms.Form):
                              validators=[validators.EmailValidator])
     password = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
                                validators=[validators.MaxLengthValidator])
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'size': '10'}),
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
                                 validators=[validators.MaxLengthValidator])
 
+class EmailForm(forms.Form):
+    email = forms.EmailField(widget=forms.TextInput(attrs={'size': '20'}),
+                             validators=[validators.MaxLengthValidator, existsEmail])
 
+class ResetPassword(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
+                               validators=[validators.MaxLengthValidator])
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
+                                validators=[validators.MaxLengthValidator])

@@ -1,3 +1,4 @@
+import base64
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.shortcuts import render, render_to_response
@@ -7,8 +8,8 @@ from django.core.mail import EmailMessage
 from django.views.generic import View
 
 from login.models import User, UserActivation
-from login.forms import UserRegistration
-from login.utils import hash_input
+from login.forms import UserRegistration, EmailForm, ResetPassword
+from login.utils import encrypt_input, check_inputs
 
 
 def login(request):
@@ -18,25 +19,25 @@ def login(request):
         password = request.POST['password']
         try:
             user = User.objects.get(account_name=account_name)
+            print check_inputs(password, user.password)
+            if check_inputs(password, user.password):
+                user = User.objects.get(account_name=account_name, password=user.password)
+            else:
+                return render(request, 'login.html', {'recovery': 'Incorrect password', 'account_name': account_name})
         except User.DoesNotExist:
             return HttpResponseRedirect('register')
+        is_active = False
         try:
-            user = User.objects.get(account_name=account_name, password=hash_input(password))
-        except User.DoesNotExist:
-            return render(request, 'login.html', {'recovery': 'Incorrect password', 'account_name': account_name})
+            is_active = UserActivation.objects.get(user_id=user.id).active
+        except UserActivation.DoesNotExist:
+            pass
         finally:
-            is_active = False
-            try:
-                is_active = UserActivation.objects.get(user_id=user.id).active
-            except UserActivation.DoesNotExist:
-                pass
-            finally:
-                if is_active:
-                    request.session['account_name'] = user.account_name
-                    return HttpResponseRedirect(reverse('index'))
-                else:
-                    message = 'The user %s was not activated. Check your email' % user.account_name
-                    return render(request, 'login.html', {'message': message})
+            if is_active:
+                request.session['account_name'] = user.account_name
+                return HttpResponseRedirect(reverse('index'))
+            else:
+                message = 'The user %s was not activated. Check your email' % user.account_name
+                return render(request, 'login.html', {'message': message})
     else:
         return render_to_response('login.html', context_instance=context_instance)
 
@@ -50,21 +51,22 @@ def register(request):
                 account_name=request.POST['account_name'],
                 full_name=request.POST['full_name'],
                 email=request.POST['email'],
-                password=hash_input(),
+                password=encrypt_input(request.POST['password']),
                 last_login_date=timezone.now())
             new_user.save()
-            activation_key = hash_input(request.POST['account_name'])
+            salt, activation_key = encrypt_input(request.POST['account_name']).split('$')
             ac = UserActivation(user=new_user, activation_key=activation_key)
             ac.save()
-            print reverse('login:activate', args=(activation_key,))
             activation_url = request.get_host() + reverse('login:activate', args=(activation_key,))
-            print activation_url
-            email = EmailMessage('Account activation', 'the activation url %s' % activation_url,
+            email = EmailMessage('Account activation',
+                                 'The activation url for your account %s is %s'
+                                 % (request.POST['account_name'], activation_url),
                                  to=[request.POST['email']])
             email.send()
             request.session['account_name'] = request.POST['account_name']
 
-            return render_to_response('confirm.html', {'new_user': new_user})
+            return render_to_response('confirm.html', {'new_user': new_user},
+                                      context_instance=RequestContext(request))
     return render_to_response('register.html', {'form': form}, context_instance=RequestContext(request))
 
 
@@ -84,8 +86,9 @@ def activate(request, **kwargs):
 
 
 def logout(request):
-    try:
+    if request.session.has_key('account_name'):
         account_name = request.session['account_name']
+    try:
         del request.session['account_name']
     except KeyError:
         pass
@@ -101,3 +104,46 @@ def index(request):
 
 def user_index(request):
     return render_to_response('user_index.html', {'user_id': request.session['user_id']})
+
+
+class UserEmailResetPassword(View):
+    form_class = EmailForm
+    template_name = 'email_for_reset_form.html'
+
+    def get(self, request, account_name):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form, 'account_name': account_name})
+
+    def post(self, request, account_name):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = User.objects.get(account_name=account_name)
+            uidb64 = base64.b64encode(str(user.id))
+            token, hsh = user.password.split('$')
+            pswd_reset_url = request.get_host() + reverse('login:reset_password', args=(uidb64, token))
+            email = EmailMessage('Password reset',
+                                 'The password reset link for the account %s is %s'
+                                 % (account_name, pswd_reset_url),
+                                 to=[request.POST['email']])
+            email.send()
+            print pswd_reset_url
+            return HttpResponse('check email to reset')
+        return render(request, self.template_name, {'form': form})
+
+
+class UserResetPassword(View):
+    form_class = ResetPassword
+    template_name = 'password_reset_form.html'
+
+    def get(self, request, uidb64, token):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form, 'uidb64': uidb64, 'token': token})
+
+    def post(self, request, uidb64, token):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = User.objects.get(pk=base64.b64decode(uidb64))
+            user.password = encrypt_input(request.POST['password'])
+            user.save()
+            return HttpResponse('pswd reset done')
+        return render(request, self.template_name, {'form': form})

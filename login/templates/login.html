@@ -4,9 +4,9 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    {%  if recovery %}
+    {% if recovery %}
         <p>{{ recovery }}</p>
-        <a href="{% url 'login:reset' %}">Reset password</a>
+        <a href="{% url 'login:email_for_reset' account_name %}">Reset password</a>
     {% endif %}
     {% if message %}
         <p> {{ message }}</p>

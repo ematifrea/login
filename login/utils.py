@@ -1,16 +1,19 @@
-__author__ = 'blu'
-
 import hashlib
 import random
-
-SALT = hashlib.md5(str(random.random())).hexdigest()[:5]
-
-
-def hash_input(putin):
-    return hashlib.md5(SALT+putin).hexdigest()
+from django.utils.encoding import smart_str
 
 
-def verify_inputs(putin, input2):
-    hashed_input = hash_input(putin)
-    return hashed_input == input2
+def get_hexdigest(salt, raw_in):
+    raw_in, salt = smart_str(raw_in), smart_str(salt)
+    return hashlib.md5(salt+raw_in).hexdigest()
 
+
+def encrypt_input(raw_in):
+    salt = get_hexdigest(str(random.random()), str(random.random()))[:5]
+    hsh = get_hexdigest(salt, raw_in)
+    return '%s$%s' % (salt, hsh)
+
+
+def check_inputs(raw_in, enc_in):
+    salt, hsh = enc_in.split('$')
+    return hsh == get_hexdigest(salt, raw_in)
