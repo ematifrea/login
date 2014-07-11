@@ -1,25 +1,11 @@
 {% extends "base.html" %}
 {% block head %}<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css" />{% endblock %}
 {% block content %}
-    {% if form.errors %}
-    <p>Please correct the error {{ form.errors }} below.</p>
-    {% endif %}
     <form method="post" action="{% url 'login:register' %}">{% csrf_token %}
-{#        {{ form.as_p }}#}
+
         <table border="0">
-            <div >
-            <label for='account_name'> Account name </label>
-            <input type='text' name='account_name' id='account_name'><br/>
-            <label for='full_name'> Full name </label>
-            <input type='text' name='full_name' id='full_name'>
-            <label for='email'> Email </label>
-            <input type='text' name='email' id='email'><br/>
-            <label for='password'>Password </label>
-            <input type='password' name='password' id='password'>
-            <label for='password2'>Re-enter password </label>
-            <input type='password' name='password2' id='password2'>
-            </div>
-        <input type="submit" name="register" value="Register" />
+            {{ form.as_table }}
         </table>
+    <input type="submit" name="register" value="Register" />
     </form>
 {% endblock %}

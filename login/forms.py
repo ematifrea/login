@@ -30,24 +30,32 @@ def identicalPasswords(password, password2):
     else:
         raise ValidationError("Passwords do not match.")
 
-class UserRegistration(forms.Form):
-    account_name = forms.CharField(widget=forms.TextInput(attrs={'size': '20'}),
-                                   validators=[validators.MaxLengthValidator, isValidUsername])
-    full_name = forms.CharField(widget=forms.TextInput(attrs={'size': '20'}),
-                                validators=[validators.MaxLengthValidator])
-    email = forms.EmailField(widget=forms.TextInput(attrs={'size': '20'}),
-                             validators=[validators.EmailValidator])
+
+class UserRegistration(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['account_name', 'full_name', 'email', 'password']
+
     password = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
                                validators=[validators.MaxLengthValidator])
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
                                 validators=[validators.MaxLengthValidator])
+
 
 class EmailForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={'size': '20'}),
                              validators=[validators.MaxLengthValidator, existsEmail])
 
+
 class ResetPassword(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
                                validators=[validators.MaxLengthValidator])
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
+                                validators=[validators.MaxLengthValidator])
+
+
+class UserLoginForm(forms.Form):
+    account_name = forms.CharField(widget=forms.TextInput(attrs={'size': '20'}),
+                               validators=[validators.MaxLengthValidator])
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'size': '20'}),
                                 validators=[validators.MaxLengthValidator])

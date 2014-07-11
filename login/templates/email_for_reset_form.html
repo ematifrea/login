@@ -8,4 +8,7 @@
             </div>
             <input type="submit" name="reset" value="Reset password" />
         </form>
+    {%  if reset_message %}
+        <p>{{ reset_message }}</p>
+    {% endif %}
 {% endblock %}

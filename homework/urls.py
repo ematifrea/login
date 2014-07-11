@@ -1,13 +1,13 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from login import views
+from login.views import Index, Logout
 admin.autodiscover()
 
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', views.index, name='index'),
+    url(r'^$', Index.as_view(), name='index'),
     url(r'^login/', include('login.urls', namespace='login')),
-    url(r'^logout/', views.logout, name='logout'),
+    url(r'^logout/', Logout.as_view(), name='logout'),
     url(r'^admin/', include(admin.site.urls)),
 )
