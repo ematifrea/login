@@ -1,6 +1,15 @@
 {% extends "base.html" %}
-{% block head %} HOME {% endblock %}
+{% block title %} HOME {% endblock %}
 {% block content %}
-    <p>Welcome {{ account_name }} </p>
-    <a href="{% url 'logout' %}">Logout</a>
+    <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="{% url 'login:user_profile' account_name %}" class="navbar-link"> {{ account_name }} </a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+          </div><
 {% endblock %}

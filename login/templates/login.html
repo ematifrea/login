@@ -1,16 +1,24 @@
 {% extends 'base.html' %}
-
-{% block head %}LOGIN <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css" />{% endblock %}
-{% block title %}Login{% endblock %}
-
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/bootstrap-responsive.min.css" rel="stylesheet">
 {% block content %}
-    {% if messages %}
-        <a href="{% url 'login:email_for_reset' account_name %}">Reset password</a>
-    {% endif %}
-    <form method="post" action="{% url 'login:login' %}">{% csrf_token %}
-        {{ form.as_p }}{% csrf_token %}
-        <input type="submit" name="login" value="Login" />
-    </form>
-    <a href="{%  url 'login:register' %}">Register</a>
-    <hr/>
+      <div class="container">
+        {% if messages %}
+            <a href="{% url 'login:email_for_reset' account_name %}">Reset password</a>
+        {% endif %}
+
+      <form class="form-signin" role="form" method="post" action="{% url 'login:login' %}">{% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text"  name="account_name" class="form-control" placeholder="Account name" required autofocus>
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary" type="submit" name="login">Sign in</button>
+      </form>
+      <a href="{%  url 'login:register' %}">Register</a>
+    </div>
 {% endblock %}
+

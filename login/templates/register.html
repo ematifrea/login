@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block head %}<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css" />{% endblock %}
 {% block content %}
     <form method="post" action="{% url 'login:register' %}">{% csrf_token %}
 
@@ -8,4 +7,6 @@
         </table>
     <input type="submit" name="register" value="Register" />
     </form>
+
+
 {% endblock %}

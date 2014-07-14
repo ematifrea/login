@@ -5,7 +5,7 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.mail import EmailMessage
-from django.views.generic import View, FormView, TemplateView, UpdateView
+from django.views.generic import View, FormView, TemplateView, UpdateView, DetailView
 from django.contrib import messages
 from login.models import User, UserActivation
 from login.forms import UserRegistration, EmailForm, ResetPassword, UserLoginForm
@@ -115,6 +115,10 @@ class Logout(TemplateView):
             pass
         return {'data': account_name}
 
+
+class UserProfile(DetailView):
+    template_name = 'profile.html'
+    model = User
 
 class UserEmailResetPassword(FormView):
     form_class = EmailForm
