@@ -1,5 +1,3 @@
-import hashlib
-import random
 from django.db import models
 from django.utils import timezone
 import datetime
@@ -7,7 +5,7 @@ import datetime
 # Create your models here.
 
 class User(models.Model):
-    account_name = models.CharField(max_length=100, unique=True)
+    account_name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     password = models.CharField(max_length=50)

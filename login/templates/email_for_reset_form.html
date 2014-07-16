@@ -3,7 +3,6 @@
 {% block content %}
         <form method="post" action="{% url 'login:email_for_reset' account_name %}">{% csrf_token %}
             <div >
-                <label for='email'> Enter email: </label>
                 {{ form.as_p }}
             </div>
             <input type="submit" name="reset" value="Reset password" />

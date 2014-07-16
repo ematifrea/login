@@ -1,11 +1,11 @@
 import base64
 from django.core.urlresolvers import reverse
 from django.utils import timezone
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.mail import EmailMessage
-from django.views.generic import View, FormView, TemplateView, UpdateView, DetailView
+from django.views.generic import FormView, TemplateView, DetailView
 from django.contrib import messages
 from login.models import User, UserActivation
 from login.forms import UserRegistration, EmailForm, ResetPassword, UserLoginForm
@@ -34,13 +34,13 @@ class Login(FormView):
             if check_inputs(password, user.password):
                 user = User.objects.get(account_name=account_name, password=user.password)
             else:
-                messages = ['Incorrect password']
+                message = ['Incorrect password']
                 return render_to_response(self.template_name,
                                           {'form': form,
                                            'account_name': account_name,
-                                           'messages': messages})
+                                           'messages': message})
         except User.DoesNotExist:
-            messages.error(self.request, 'pls reg')
+            messages.error(self.request, 'Please register')
             return HttpResponseRedirect('register')
         is_active = False
         try:
